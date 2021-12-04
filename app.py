@@ -12,35 +12,26 @@ debug = DebugToolbarExtension(app)
 
 
 @app.route("/")
-def show_survey_start():
+def starter_page():
     """shows the begin page."""
 
     return render_template("survey_start.html", survey=survey)
 
 
 @app.route("/begin", methods=["POST"])
-def start_survey():
+def starts_questions():
     """Clear the session of responses."""
-
-    
-
     return redirect("/questions/0")
 
 
 @app.route("/answer", methods=["POST"])
 def handle_question():
-    """Save response and redirect to next question."""
-
-    # get the response choice
-    choice = request.form['answer']
-
-   
+    choice = request.form['answer']  
     responses.append(choice)
     
-
     if (len(responses) == len(survey.questions)):
-        # They've answered all the questions! Thank them.
-        return redirect("/complete")
+        
+        return redirect("/done")
 
     else:
         return redirect(f"/questions/{len(responses)}")
@@ -48,20 +39,17 @@ def handle_question():
 
 @app.route("/questions/<int:qid>")
 def show_question(qid):
-    """Display current question."""
+    """shows correct question in order."""
    
 
     if (responses is None):
-        # trying to access question page too soon
         return redirect("/")
 
     if (len(responses) == len(survey.questions)):
-        # They've answered all the questions! Thank them.
-        return redirect("/complete")
+        return redirect("/done")
 
     if (len(responses) != qid):
-        # Trying to access questions out of order.
-        flash(f"Invalid question id: {qid}.")
+        flash(f"Please do question in order.")
         return redirect(f"/questions/{len(responses)}")
 
     question = survey.questions[qid]
@@ -69,8 +57,8 @@ def show_question(qid):
         "question.html", question_num=qid, question=question)
 
 
-@app.route("/complete")
-def complete():
-    """Survey complete. Show completion page."""
+@app.route("/done")
+def fininsh_survey ():
+    """Survey done page."""
 
-    return render_template("completion.html")
+    return render_template("done.html")
