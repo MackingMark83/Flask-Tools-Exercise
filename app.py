@@ -18,12 +18,6 @@ def starter_page():
     return render_template("survey_start.html", survey=survey)
 
 
-@app.route("/begin", methods=["POST"])
-def starts_questions():
-    """Clear the session of responses."""
-    return redirect("/questions/0")
-
-
 @app.route("/answer", methods=["POST"])
 def handle_question():
     choice = request.form['answer']  
